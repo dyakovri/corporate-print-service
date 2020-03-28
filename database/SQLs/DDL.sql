@@ -2,115 +2,115 @@
 -- DDL
 --------------------------------------------------------
 -- Отладка
-drop schema if exists users, files, logs, automations cascade;
+DROP SCHEMA IF EXISTS users, files, logs, automations cascade;
 
 -- Работа с пользователями
-create schema if not exists users;
+CREATE SCHEMA IF NOT EXISTS users;
 
-drop table if exists users.type;
-create table users.type(
-    id serial primary key
-, 	short_name varchar(64)
-, 	description text
+DROP TABLE IF EXISTS users.type;
+CREATE TABLE users.type(
+    id SERIAL PRIMARY KEY
+, 	short_name VARCHAR(64)
+, 	description TEXT
 );
-insert into users.type(id,short_name, description) values
+INSERT INTO users.type(id,short_name, description) VALUES
 (1,'superuser','User with administrator privileges, which can grants superusers.'),
 (2,'admin','User with administrator privileges.'),
 (3,'user::tradeunion','User which can login with tradeunion number and surname.'),
 (4,'user::student','User which can login with student number and surname.');
 
 
-create table if not exists users.profile(
-    id serial primary key
-,	firstname varchar(64)
-,	surname varchar(64)
-,	middlename varchar(64)
-, 	created timestamp default now()
-, 	birthday date
-, 	email varchar(256)
-,	vkid integer
+CREATE TABLE IF NOT EXISTS users.profile(
+    id SERIAL PRIMARY KEY
+,	firstname VARCHAR(64)
+,	surname VARCHAR(64)
+,	middlename VARCHAR(64)
+, 	created TIMESTAMP DEFAULT now()
+, 	birthday DATE
+, 	email VARCHAR(256)
+,	vkid INTEGER
 );
 
-create table if not exists users.preregistred_profile(
-    id serial primary key
-,	firstname varchar(64)
-,	surname varchar(64)
-,	middlename varchar(64)
-, 	birthday date
-, 	email varchar(256)
-, 	type_id integer
-, 	login varchar(64)
-, 	created timestamp default now()
-,	expires timestamp
-, 	foreign key (type_id) references users.type(id)
+CREATE TABLE IF NOT EXISTS users.preregistred_profile(
+    id SERIAL PRIMARY KEY
+,	firstname VARCHAR(64)
+,	surname VARCHAR(64)
+,	middlename VARCHAR(64)
+, 	birthday DATE
+, 	email VARCHAR(256)
+, 	type_id INTEGER
+, 	login VARCHAR(64)
+, 	created TIMESTAMP DEFAULT now()
+,	expires TIMESTAMP
+, 	FOREIGN KEY (type_id) REFERENCES users.type(id)
 );
 
-create table if not exists users.login(
-    id serial primary key
-,	user_id integer
-,	type_id integer
-, 	login varchar(64)
-,	created timestamp default now()
-, 	foreign key (user_id) references users.profile(id)
-, 	foreign key (type_id) references users.type(id)
+CREATE TABLE IF NOT EXISTS users.login(
+    id SERIAL PRIMARY KEY
+,	user_id INTEGER
+,	type_id INTEGER
+, 	login VARCHAR(64)
+,	created TIMESTAMP DEFAULT now()
+, 	FOREIGN KEY (user_id) REFERENCES users.profile(id)
+, 	FOREIGN KEY (type_id) REFERENCES users.type(id)
 );
 
-create table if not exists users.approval(
-    id serial primary key
-,   login_id integer
-, 	binary_id integer --use lo_import and lo_export
-, 	is_proved boolean
-, 	created timestamp default now()
-,	expires timestamp
-, 	foreign key (login_id) references users.login(id)
+CREATE TABLE IF NOT EXISTS users.approval(
+    id SERIAL PRIMARY KEY
+,   login_id INTEGER
+, 	binary_id INTEGER --use lo_import and lo_export
+, 	is_proved BOOLEAN
+, 	created TIMESTAMP DEFAULT now()
+,	expires TIMESTAMP
+, 	FOREIGN KEY (login_id) REFERENCES users.login(id)
 );
 
 -- Работа с файлами
-create schema if not exists files;
+CREATE SCHEMA IF NOT EXISTS files;
 
-drop table if exists files.type;
-create table files.type(
-    id serial primary key
-, 	short_name varchar(64)
-, 	description text
+DROP TABLE IF EXISTS files.type;
+CREATE TABLE files.type(
+    id SERIAL PRIMARY KEY
+, 	short_name VARCHAR(64)
+, 	description TEXT
 );
-insert into files.type(id,short_name, description) values
-(1,'pdf','Portable Document Format by Adobe');
+INSERT INTO files.type(id,short_name, description) VALUES
+(1,'pdf','PorTABLE Document Format by Adobe');
 
-create table if not exists files.file(
-    id serial primary key
-, 	pin integer
-, 	user_id integer
-, 	type_id integer
-, 	hash varchar(32)
-, 	size integer
-,   page_count integer
-, 	binary_id integer --use lo_import and lo_export
-, 	created timestamp default now()
-, 	foreign key (user_id) references users.profile(id)
-, 	foreign key (type_id) references files.type(id)
+CREATE TABLE IF NOT EXISTS files.file(
+    id SERIAL PRIMARY KEY
+, 	pin INTEGER
+, 	user_id INTEGER
+, 	type_id INTEGER
+, 	hash VARCHAR(32)
+, 	size INTEGER
+,   page_count INTEGER
+, 	binary_id INTEGER --use lo_import and lo_export
+, 	created TIMESTAMP DEFAULT now()
+, 	FOREIGN KEY (user_id) REFERENCES users.profile(id)
+, 	FOREIGN KEY (type_id) REFERENCES files.type(id)
 );
 
-create table if not exists files.file_option(
-    id serial primary key
-, 	file_id integer
-, 	pages varchar(64)
-,	count_per_list integer
-, 	twosided boolean
-, 	created timestamp default now()
-, 	foreign key (file_id) references files.file(id)
+CREATE TABLE IF NOT EXISTS files.file_option(
+    id SERIAL PRIMARY KEY
+, 	file_id INTEGER
+, 	pages VARCHAR(64)
+,	count_per_list INTEGER
+, 	twosided BOOLEAN
+, 	created TIMESTAMP DEFAULT now()
+, 	FOREIGN KEY (file_id) REFERENCES files.file(id)
 );
 
 --Работа с логом
-create schema if not exists logs;
+CREATE SCHEMA IF NOT EXISTS logs;
 
-drop table if exists logs.type;
-create table logs.type(
-    id serial primary key
-, 	short_name varchar(64)
-, 	description text
+DROP TABLE IF EXISTS logs.type;
+CREATE TABLE logs.type(
+    id SERIAL PRIMARY KEY
+, 	short_name VARCHAR(64)
+, 	description TEXT
 );
-insert into files.type(id,short_name, description) values
+INSERT INTO files.type(id,short_name, description) VALUES
 (100,'UserAction','Miscellaneous action with users'),
 (101,'UserAddProfile','User add profile'),
 (102,'UserAddLogin','User add login'),
@@ -133,31 +133,31 @@ insert into files.type(id,short_name, description) values
 (502,'TerminalappButtonClick','Terminal app used'),
 (503,'TerminalappPrint','Terminal app sent document to printer');
 
-create table if not exists logs.record(
-    id serial primary key
-, 	created timestamp default now()
-, 	issuer_id integer
-, 	user_id integer
-, 	file_id integer
-, 	type_id integer
-, 	message text
---, 	foreign key (issuer_id) references pg_catalog.pg_user(usesysid)
-, 	foreign key (user_id) references users.profile(id)
-, 	foreign key (file_id) references files.file(id)
-, 	foreign key (type_id) references logs.type(id)
+CREATE TABLE IF NOT EXISTS logs.record(
+    id SERIAL PRIMARY KEY
+, 	created TIMESTAMP DEFAULT now()
+, 	issuer_id INTEGER
+, 	user_id INTEGER
+, 	file_id INTEGER
+, 	type_id INTEGER
+, 	message TEXT
+--, 	FOREIGN KEY (issuer_id) REFERENCES pg_catalog.pg_user(usesysid)
+, 	FOREIGN KEY (user_id) REFERENCES users.profile(id)
+, 	FOREIGN KEY (file_id) REFERENCES files.file(id)
+, 	FOREIGN KEY (type_id) REFERENCES logs.type(id)
 );
 
 -- Функции
-create schema if not exists automations;
+CREATE SCHEMA IF NOT EXISTS automations;
 
-drop table if exists automations.response_code;
-create table automations.response_code(
-    id serial primary key
-, 	short_name varchar(64)
-, 	description text
+DROP TABLE IF EXISTS automations.response_code;
+CREATE TABLE automations.response_code(
+    id SERIAL PRIMARY KEY
+, 	short_name VARCHAR(64)
+, 	description TEXT
 );
 -- Скопированы коды ответа HTTP, и так сойдет
-insert into automations.response_code(id,short_name,description) values
+INSERT INTO automations.response_code(id,short_name,description) VALUES
 -- Информационные
 (100, 'Continue', '"Продолжить". Этот промежуточный ответ указывает, что запрос успешно принят и клиент может продолжать присылать запросы либо проигнорировать этот ответ, если запрос был завершён.'),
 (101, 'Switching Protocol', '"Переключение протокола". Этот код присылается в ответ на запрос клиента, содержащий заголовок Upgrade:, и указывает, что сервер переключился на протокол, который был указан в заголовке. Эта возможность позволяет перейти на несовместимую версию протокола и обычно не используется.'),
@@ -176,7 +176,7 @@ insert into automations.response_code(id,short_name,description) values
 (301, 'Moved Permanently', '"Перемещён на постоянной основе". Этот код ответа значит, что URI запрашиваемого ресурса был изменен. Возможно, новый URI будет предоставлен в ответе.'),
 (302, 'Found', '"Найдено". Этот код ответа значит, что запрошенный ресурс временно изменен. Новые изменения в URI могут быть доступны в будущем. Таким образом, этот URI, должен быть использован клиентом в будущих запросах.'),
 (303, 'See Other', '"Просмотр других ресурсов". Этот код ответа присылается, чтобы направлять клиента для получения запрашиваемого ресурса в другой URI с запросом GET.'),
-(304, 'Not Modified', '"Не модифицировано". Используется для кэширования. Это код ответа значит, что запрошенный ресурс не был изменен. Таким образом, клиент может продолжать использовать кэшированную версию ответа.'),
+(304, 'Not ModIFied', '"Не модифицировано". Используется для кэширования. Это код ответа значит, что запрошенный ресурс не был изменен. Таким образом, клиент может продолжать использовать кэшированную версию ответа.'),
 (305, 'Use Proxy', '"Использовать прокси". Это означает, что запрошенный ресурс должен быть доступен через прокси. Этот код ответа в основном не поддерживается из соображений безопасности.'),
 (306, 'Switch Proxy', 'Больше не использовать. Изначально подразумевалось, что " последующие запросы должны использовать указанный прокси."'),
 (307, 'Temporary Redirect', '"Временное перенаправление". Сервер отправил этот ответ, чтобы клиент получил запрошенный ресурс на другой URL-адрес с тем же методом, который использовал предыдущий запрос. Данный код имеет ту же семантику, что код ответа 302 Found, за исключением того, что агент пользователя не должен изменять используемый метод: если в первом запросе использовался POST, то во втором запросе также должен использоваться POST.'),
@@ -188,7 +188,7 @@ insert into automations.response_code(id,short_name,description) values
 (403, 'Forbidden', '"Запрещено". У клиента нет прав доступа к содержимому, поэтому сервер отказывается дать надлежащий ответ. '),
 (404, 'Not Found', '"Не найден". Сервер не может найти запрашиваемый ресурс. Код этого ответа, наверно, самый известный из-за частоты его появления в вебе. '),
 (405, 'Method Not Allowed', '"Метод не разрешен". Сервер знает о запрашиваемом методе, но он был деактивирован и не может быть использован. Два обязательных метода,  GET и HEAD,  никогда не должны быть деактивированы и не должны возвращать этот код ошибки.'),
-(406, 'Not Acceptable', 'Этот ответ отсылается, когда веб сервер после выполнения server-driven content negotiation, не нашел контента, отвечающего критериям, полученным из user agent.'),
+(406, 'Not AccepTABLE', 'Этот ответ отсылается, когда веб сервер после выполнения server-driven content negotiation, не нашел контента, отвечающего критериям, полученным из user agent.'),
 (407, 'Proxy Authentication Required', 'Этот код ответа аналогичен коду 401, только аутентификация требуется для прокси сервера.'),
 (408, 'Request Timeout', 'Ответ с таким кодом может прийти, даже без предшествующего запроса. Он означает, что сервер хотел бы отключить это неиспользуемое соеднинение. Этот метод используется все чаще с тех пор, как некоторые браузеры, вроде Chrome и IE9, стали использовать механизмы предварительного соединения для ускорения серфинга  (смотрите баг 881804, будущей реализации этого механизма в Firefox). Также учитывайте, что некоторые серверы прерывают соединения не отправляя подобных сообщений.'),
 (409, 'Conflict', 'Этот ответ отсылается, когда запрос конфликтует с текущим состоянием сервера.'),
