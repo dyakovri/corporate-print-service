@@ -23,7 +23,7 @@ INSERT INTO users.type(id,short_name, description) VALUES
 CREATE TABLE IF NOT EXISTS users.profile(
     id SERIAL PRIMARY KEY
 ,	firstname VARCHAR(64)
-,	surname VARCHAR(64)
+,	lastname VARCHAR(64)
 ,	middlename VARCHAR(64)
 , 	created TIMESTAMP DEFAULT now()
 , 	birthday DATE
@@ -34,12 +34,12 @@ CREATE TABLE IF NOT EXISTS users.profile(
 CREATE TABLE IF NOT EXISTS users.preregistred_profile(
     id SERIAL PRIMARY KEY
 ,	firstname VARCHAR(64)
-,	surname VARCHAR(64)
+,	lastname VARCHAR(64)
 ,	middlename VARCHAR(64)
 , 	birthday DATE
 , 	email VARCHAR(256)
 , 	type_id INTEGER
-, 	login VARCHAR(64)
+, 	password VARCHAR(64)
 , 	created TIMESTAMP DEFAULT now()
 ,	expires TIMESTAMP
 , 	FOREIGN KEY (type_id) REFERENCES users.type(id)
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS users.login(
     id SERIAL PRIMARY KEY
 ,	user_id INTEGER
 ,	type_id INTEGER
-, 	login VARCHAR(64)
+, 	password VARCHAR(64)
 ,	created TIMESTAMP DEFAULT now()
 , 	FOREIGN KEY (user_id) REFERENCES users.profile(id)
 , 	FOREIGN KEY (type_id) REFERENCES users.type(id)
