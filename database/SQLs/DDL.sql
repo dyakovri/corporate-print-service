@@ -16,7 +16,7 @@ create table users.type(
 insert into users.type(id,short_name, description) values
 (1,'superuser','User with administrator privileges, which can grants superusers.'),
 (2,'admin','User with administrator privileges.'),
-(3,'user::tradeunoun','User which can login with tradeunion number and surname.'),
+(3,'user::tradeunion','User which can login with tradeunion number and surname.'),
 (4,'user::student','User which can login with student number and surname.');
 
 
