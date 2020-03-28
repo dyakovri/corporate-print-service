@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 import psycopg2
 from PyPDF2 import PdfFileReader
 from PyQt5 import QtWidgets, uic
@@ -18,8 +19,75 @@ def ui_create():
     # win = uic.loadUi("form.ui")  # расположение вашего файла .ui
     win = QtWidgets.QWidget()
     uiM.setupUi(win)
+    uiM.btn_1.clicked.connect(open_screen_sign_in_on_stud)
+    uiM.btn_2.clicked.connect(open_screen_sign_in_on_prof)
+    uiM.btn_exit.clicked.connect(open_main_screen)
+    uiM.line_last_name.textEdited.connect(last_name_validation_check)
+    open_main_screen()
+    # ui_main_form.btn_exin.clicked.connect(exit_page)
     win.show()
     sys.exit(app.exec())
+
+
+def open_screen_sign_in_on_stud():
+    uiM.Main.setVisible(False)
+    uiM.Main_2.setVisible(True)
+    uiM.line_number.setPlaceholderText("Номер студенческого")
+    uiM.line_number.setText("")
+    uiM.line_last_name.setText("")
+    uiM.status.setVisible(False)
+    uiM.line_number.disconnect()
+    uiM.line_number.textEdited.connect(stud_validation_check)
+    uiM.sign_in.disconnect()
+    uiM.sign_in.clicked.connect(db_check_stud)
+
+
+def open_screen_sign_in_on_prof():
+    uiM.Main.setVisible(False)
+    uiM.Main_2.setVisible(True)
+    uiM.line_number.setPlaceholderText("Номер профсоюзного билета")
+    uiM.line_number.setText("")
+    uiM.line_last_name.setText("")
+    uiM.status.setVisible(False)
+    uiM.line_number.disconnect()
+    uiM.line_number.textEdited.connect(prof_validation_check)
+
+
+def db_check_stud():
+    uiM.status.setText("Неверный номер или фамилия")
+    uiM.status.setVisible(True)
+
+
+def stud_validation_check():
+    if re.match("^\d*$", uiM.line_number.text()) is None:
+        uiM.line_number.setText(stud_validation_check.temp_text)
+    stud_validation_check.temp_text = uiM.line_number.text()
+
+
+stud_validation_check.temp_text = ""
+
+
+def prof_validation_check():
+    if re.match("^\d{0,6}$", uiM.line_number.text()) is None:
+        uiM.line_number.setText(prof_validation_check.temp_text)
+    prof_validation_check.temp_text = uiM.line_number.text()
+
+
+prof_validation_check.temp_text = ""
+
+
+def last_name_validation_check():
+    if re.match("^[А-Яа-яЁё]*$", uiM.line_last_name.text()) is None:
+        uiM.line_last_name.setText(last_name_validation_check.temp_text)
+    last_name_validation_check.temp_text = uiM.line_last_name.text()
+
+
+last_name_validation_check.temp_text = ""
+
+
+def open_main_screen():
+    uiM.Main.setVisible(True)
+    uiM.Main_2.setVisible(False)
 
 
 def printer():
