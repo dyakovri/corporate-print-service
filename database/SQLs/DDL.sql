@@ -16,7 +16,7 @@ CREATE SCHEMA IF NOT EXISTS users;
 DROP TABLE IF EXISTS users.type;
 
 CREATE TABLE users.type(
-    id SERIAL PRIMARY KEY ,
+    id SERIAL PRIMARY KEY,
     short_name VARCHAR(64) ,
     description TEXT
 );
@@ -50,18 +50,19 @@ VALUES (
 );
 
 CREATE TABLE IF NOT EXISTS users.profile(
-    id SERIAL PRIMARY KEY ,
+    id SERIAL,
     firstname VARCHAR(64) ,
     lastname VARCHAR(64) ,
     middlename VARCHAR(64) ,
-    created TIMESTAMP DEFAULT NOW() ,
     birthday DATE ,
     email VARCHAR(256) ,
-    vkid INTEGER
+    vkid INTEGER,
+    created TIMESTAMP DEFAULT NOW() ,
+    PRIMARY KEY (id, created)
 );
 
 CREATE TABLE IF NOT EXISTS users.preregistred_profile(
-    id SERIAL PRIMARY KEY ,
+    id SERIAL,
     firstname VARCHAR(64) ,
     lastname VARCHAR(64) ,
     middlename VARCHAR(64) ,
@@ -71,27 +72,30 @@ CREATE TABLE IF NOT EXISTS users.preregistred_profile(
     PASSWORD VARCHAR(64) ,
     created TIMESTAMP DEFAULT NOW() ,
     expires TIMESTAMP ,
+    PRIMARY KEY (id, created) ,
     FOREIGN KEY (type_id) REFERENCES users.type(id)
 );
 
 CREATE TABLE IF NOT EXISTS users.login(
-    id SERIAL PRIMARY KEY ,
+    id SERIAL,
     user_id INTEGER ,
     type_id INTEGER ,
     password VARCHAR(64) ,
     created TIMESTAMP DEFAULT NOW() ,
-    FOREIGN KEY (user_id) REFERENCES users.profile(id) ,
+    PRIMARY KEY (id, created),
+--    FOREIGN KEY (user_id) REFERENCES users.profile(id) ,
     FOREIGN KEY (type_id) REFERENCES users.type(id)
 );
 
 CREATE TABLE IF NOT EXISTS users.approval(
-    id SERIAL PRIMARY KEY ,
+    id SERIAL,
     login_id INTEGER ,
     binary_id INTEGER, --use lo_import and lo_export
     is_proved BOOLEAN ,
     created TIMESTAMP DEFAULT NOW() ,
     expires TIMESTAMP ,
-    FOREIGN KEY (login_id) REFERENCES users.login(id)
+    PRIMARY KEY (id, created)
+--    FOREIGN KEY (login_id) REFERENCES users.login(id)
 );
 
 CREATE OR REPLACE
@@ -198,29 +202,29 @@ VALUES (
 );
 
 CREATE TABLE IF NOT EXISTS files.file(
-    id SERIAL PRIMARY KEY ,
+    id SERIAL ,
     pin INTEGER ,
     user_id INTEGER ,
     type_id INTEGER ,
     hash VARCHAR(32) ,
     SIZE INTEGER ,
     page_count INTEGER ,
-    binary_id INTEGER
-    --use lo_import and lo_export
-,
+    binary_id INTEGER, --use lo_import and lo_export
     created TIMESTAMP DEFAULT NOW() ,
-    FOREIGN KEY (user_id) REFERENCES users.profile(id) ,
+    PRIMARY KEY (id, created),
+--    FOREIGN KEY (user_id) REFERENCES users.profile(id) ,
     FOREIGN KEY (type_id) REFERENCES files.type(id)
 );
 
 CREATE TABLE IF NOT EXISTS files.option(
-    id SERIAL PRIMARY KEY ,
+    id SERIAL,
     file_id INTEGER ,
     pages VARCHAR(64) ,
     count_per_list INTEGER ,
     twosided BOOLEAN ,
     created TIMESTAMP DEFAULT NOW() ,
-    FOREIGN KEY (file_id) REFERENCES files.file(id)
+    PRIMARY KEY (id, created)
+--    FOREIGN KEY (file_id) REFERENCES files.file(id)
 );
 
 
@@ -351,16 +355,16 @@ VALUES (
 );
 
 CREATE TABLE IF NOT EXISTS logs.record(
-    id SERIAL PRIMARY KEY ,
+    id SERIAL ,
     created TIMESTAMP DEFAULT NOW() ,
     issuer_id INTEGER ,
     user_id INTEGER ,
     file_id INTEGER ,
     type_id INTEGER ,
-    message TEXT
-    --,     FOREIGN KEY (issuer_id) REFERENCES pg_catalog.pg_user(usesysid)
-,
-    FOREIGN KEY (user_id) REFERENCES users.profile(id) ,
-    FOREIGN KEY (file_id) REFERENCES files.file(id) ,
+    message TEXT ,
+    -- FOREIGN KEY (issuer_id) REFERENCES pg_catalog.pg_user(usesysid),
+    PRIMARY KEY (id, created) ,
+--    FOREIGN KEY (user_id) REFERENCES users.profile(id) ,
+--    FOREIGN KEY (file_id) REFERENCES files.file(id) ,
     FOREIGN KEY (type_id) REFERENCES logs.type(id)
 );
