@@ -1,6 +1,6 @@
 -- Returns user id if login succeed, else returns NULL
-DROP FUNCTION IF EXISTS automations.login;
-CREATE OR REPLACE FUNCTION automations.login(
+DROP FUNCTION IF EXISTS users.login;
+CREATE OR REPLACE FUNCTION users.login(
     IN p_type_id INTEGER,
     IN p_login VARCHAR(64),
     IN p_password VARCHAR(64)
@@ -30,8 +30,8 @@ $$ LANGUAGE plpgsql;
 
 
 -- Returns user id if no such user already exists, else returns error
-DROP FUNCTION IF EXISTS automations.register;
-CREATE OR REPLACE FUNCTION automations.register(
+DROP FUNCTION IF EXISTS users.register;
+CREATE OR REPLACE FUNCTION users.register(
     IN p_type_id INTEGER,
     IN p_login VARCHAR(64),
     IN p_password VARCHAR(64)
