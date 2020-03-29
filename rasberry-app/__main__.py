@@ -54,7 +54,8 @@ def open_screen_sign_in_on_prof():
     open_screen_main2()
     uiM.line_number.disconnect()
     uiM.line_number.textEdited.connect(prof_validation_check)
-    # TODO коннект проверки на кнопку логина
+    uiM.sign_in.disconnect()
+    uiM.sign_in.clicked.connect(db_check_prof)
 
 
 def open_screen_main2():
@@ -67,8 +68,28 @@ def open_screen_main2():
 
 def db_check_stud():
     # TODO если не найден в базе или не зарегистрирован показать сообщение
-    uiM.status.setText("Неверный номер или фамилия")
-    uiM.status.setVisible(True)
+    if False:
+        uiM.status.setText("Пользователь не зарегестрирован")
+        uiM.status.setVisible(True)
+        return
+    elif False:
+        uiM.status.setText("Неверный номер или фамилия")
+        uiM.status.setVisible(True)
+        return
+    # Если база ответила положительно, то переключить на экран с работой
+    open_screen_main3()
+
+
+def db_check_prof():
+    # TODO если не найден в базе или не зарегистрирован показать сообщение
+    if False:
+        uiM.status.setText("Пользователь не зарегестрирован")
+        uiM.status.setVisible(True)
+        return
+    elif False:
+        uiM.status.setText("Неверный номер или фамилия")
+        uiM.status.setVisible(True)
+        return
     # Если база ответила положительно, то переключить на экран с работой
     open_screen_main3()
 
