@@ -78,12 +78,12 @@ CREATE TABLE IF NOT EXISTS users.preregistred_profile(
 
 CREATE TABLE IF NOT EXISTS users.login(
     id SERIAL,
-    user_id INTEGER ,
+    profile_id INTEGER ,
     type_id INTEGER ,
     password VARCHAR(64) ,
     created TIMESTAMP DEFAULT NOW() ,
     PRIMARY KEY (id, created),
---    FOREIGN KEY (user_id) REFERENCES users.profile(id) ,
+--    FOREIGN KEY (profile_id) REFERENCES users.profile(id) ,
     FOREIGN KEY (type_id) REFERENCES users.type(id)
 );
 
@@ -151,7 +151,7 @@ LEFT JOIN (
                     id
             )
     ) ul ON
-    up.id = ul.user_id
+    up.id = ul.profile_id
 LEFT JOIN (
         SELECT
             *
@@ -204,7 +204,7 @@ VALUES (
 CREATE TABLE IF NOT EXISTS files.file(
     id SERIAL ,
     pin INTEGER ,
-    user_id INTEGER ,
+    profile_id INTEGER ,
     type_id INTEGER ,
     hash VARCHAR(32) ,
     SIZE INTEGER ,
@@ -212,7 +212,7 @@ CREATE TABLE IF NOT EXISTS files.file(
     binary_id INTEGER, --use lo_import and lo_export
     created TIMESTAMP DEFAULT NOW() ,
     PRIMARY KEY (id, created),
---    FOREIGN KEY (user_id) REFERENCES users.profile(id) ,
+--    FOREIGN KEY (profile_id) REFERENCES users.profile(id) ,
     FOREIGN KEY (type_id) REFERENCES files.type(id)
 );
 
@@ -358,13 +358,13 @@ CREATE TABLE IF NOT EXISTS logs.record(
     id SERIAL ,
     created TIMESTAMP DEFAULT NOW() ,
     issuer_id INTEGER ,
-    user_id INTEGER ,
+    profile_id INTEGER ,
     file_id INTEGER ,
     type_id INTEGER ,
     message TEXT ,
     -- FOREIGN KEY (issuer_id) REFERENCES pg_catalog.pg_user(usesysid),
     PRIMARY KEY (id, created) ,
---    FOREIGN KEY (user_id) REFERENCES users.profile(id) ,
+--    FOREIGN KEY (profile_id) REFERENCES users.profile(id) ,
 --    FOREIGN KEY (file_id) REFERENCES files.file(id) ,
     FOREIGN KEY (type_id) REFERENCES logs.type(id)
 );
