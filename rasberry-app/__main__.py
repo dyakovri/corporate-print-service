@@ -97,6 +97,20 @@ def hide_all_screens():
         v.setVisible(False)
 
 
+def get_files():
+    path = "e:/"
+    out = []
+    files_count = 0
+    for root, dirs, files in os.walk(path, topdown=False):
+        for f in files:
+            files_count += 1
+            if re.search(r"\.pdf$", f, re.I | re.UNICODE) is not None:
+                out.append(f)
+    out.sort()
+    out.append("и других файлов: " + str(files_count))
+    return out
+
+
 def printer():
     printer = QPrinter(QPrinter.HighResolution)
     # printer.setFromTo(1, 3)
@@ -132,5 +146,6 @@ def db_test():
 
 
 if __name__ == '__main__':
+    get_files()
     # db_test()
     ui_create()
