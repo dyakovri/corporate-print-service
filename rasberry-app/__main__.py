@@ -13,12 +13,15 @@ import main_form
 
 app = QtWidgets.QApplication([])
 uiM = main_form.Ui_Form()
+screens = []
 
 
 def ui_create():
+    global screens
     # win = uic.loadUi("form.ui")  # расположение вашего файла .ui
     win = QtWidgets.QWidget()
     uiM.setupUi(win)
+    screens = [uiM.Main, uiM.Main_2, uiM.Main_3, uiM.Main_4]
     uiM.btn_1.clicked.connect(open_screen_sign_in_on_stud)
     uiM.btn_2.clicked.connect(open_screen_sign_in_on_prof)
     uiM.btn_exit.clicked.connect(open_main_screen)
@@ -30,7 +33,7 @@ def ui_create():
 
 
 def open_screen_sign_in_on_stud():
-    uiM.Main.setVisible(False)
+    hide_all_screens()
     uiM.Main_2.setVisible(True)
     uiM.line_number.setPlaceholderText("Номер студенческого")
     uiM.line_number.setText("")
@@ -43,7 +46,7 @@ def open_screen_sign_in_on_stud():
 
 
 def open_screen_sign_in_on_prof():
-    uiM.Main.setVisible(False)
+    hide_all_screens()
     uiM.Main_2.setVisible(True)
     uiM.line_number.setPlaceholderText("Номер профсоюзного билета")
     uiM.line_number.setText("")
@@ -86,8 +89,12 @@ last_name_validation_check.temp_text = ""
 
 
 def open_main_screen():
+    hide_all_screens()
     uiM.Main.setVisible(True)
-    uiM.Main_2.setVisible(False)
+
+def hide_all_screens():
+    for v in screens:
+        v.setVisible(False)
 
 
 def printer():
