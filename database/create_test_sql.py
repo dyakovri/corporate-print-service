@@ -46,6 +46,7 @@ if __name__ == "__main__":
     datasheet2 = datasheet.loc[~datasheet['login_y'].isna(),['lastname','firstname','middlename','login_y','expires','email']].rename(columns={'login_y':'login'})
     datasheet2.loc[:,'type_id'] = 4
     datasheet = pd.concat([datasheet1,datasheet2])
+    datasheet.replace('nan', np.nan, inplace=True)
     
-    print(datasheet['middlename'])
-    # datasheet.to_sql('preregistred_profile', engine, schema='users', if_exists='replace', index=False)
+    # print(datasheet['middlename'])
+    datasheet.to_sql('preregistred_profile', engine, schema='users', if_exists='replace', index=False)
