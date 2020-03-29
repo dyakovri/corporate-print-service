@@ -62,7 +62,7 @@ def db_check_stud():
 
 
 def stud_validation_check():
-    if re.match("^\d*$", uiM.line_number.text()) is None:
+    if re.match(r"^\d*$", uiM.line_number.text()) is None:
         uiM.line_number.setText(stud_validation_check.temp_text)
     stud_validation_check.temp_text = uiM.line_number.text()
 
@@ -71,7 +71,7 @@ stud_validation_check.temp_text = ""
 
 
 def prof_validation_check():
-    if re.match("^\d{0,6}$", uiM.line_number.text()) is None:
+    if re.match(r"^\d{0,6}$", uiM.line_number.text()) is None:
         uiM.line_number.setText(prof_validation_check.temp_text)
     prof_validation_check.temp_text = uiM.line_number.text()
 
@@ -80,7 +80,7 @@ prof_validation_check.temp_text = ""
 
 
 def last_name_validation_check():
-    if re.match("^[А-Яа-яЁё]*$", uiM.line_last_name.text()) is None:
+    if re.match(r"^[А-Яа-яЁё]*$", uiM.line_last_name.text(), re.I) is None:
         uiM.line_last_name.setText(last_name_validation_check.temp_text)
     last_name_validation_check.temp_text = uiM.line_last_name.text()
 
