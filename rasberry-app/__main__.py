@@ -1,10 +1,12 @@
 import os
 import sys
 import re
+from threading import Timer
+
 import psycopg2
 from PyPDF2 import PdfFileReader
 from PyQt5 import QtWidgets, uic
-from PyQt5.QtCore import QFile, QIODevice, QTextStream
+from PyQt5.QtCore import QFile, QIODevice, QTextStream, QStringListModel, QTimer
 from PyQt5.QtGui import QTextDocument
 from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
 from PyQt5.QtWidgets import QDialog
@@ -25,7 +27,9 @@ def ui_create():
     uiM.btn_1.clicked.connect(open_screen_sign_in_on_stud)
     uiM.btn_2.clicked.connect(open_screen_sign_in_on_prof)
     uiM.btn_exit.clicked.connect(open_main_screen)
+    uiM.btn_exit_2.clicked.connect(open_main_screen)
     uiM.line_last_name.textEdited.connect(last_name_validation_check)
+    uiM.pushButton.clicked.connect(open_screen_main4)
     open_main_screen()
     # ui_main_form.btn_exin.clicked.connect(exit_page)
     win.show()
@@ -36,9 +40,7 @@ def open_screen_sign_in_on_stud():
     hide_all_screens()
     uiM.Main_2.setVisible(True)
     uiM.line_number.setPlaceholderText("Номер студенческого")
-    uiM.line_number.setText("")
-    uiM.line_last_name.setText("")
-    uiM.status.setVisible(False)
+    open_screen_main2()
     uiM.line_number.disconnect()
     uiM.line_number.textEdited.connect(stud_validation_check)
     uiM.sign_in.disconnect()
@@ -49,16 +51,43 @@ def open_screen_sign_in_on_prof():
     hide_all_screens()
     uiM.Main_2.setVisible(True)
     uiM.line_number.setPlaceholderText("Номер профсоюзного билета")
-    uiM.line_number.setText("")
-    uiM.line_last_name.setText("")
-    uiM.status.setVisible(False)
+    open_screen_main2()
     uiM.line_number.disconnect()
     uiM.line_number.textEdited.connect(prof_validation_check)
 
 
+def open_screen_main2():
+    uiM.line_number.setText("")
+    uiM.line_last_name.setText("")
+    uiM.status.setVisible(False)
+    prof_validation_check.temp_text = ""
+    uiM.btn_exit.setVisible(True)
+
+
 def db_check_stud():
+    # TODO если не найден в базе или не зарегистрирован показать сообщение
     uiM.status.setText("Неверный номер или фамилия")
     uiM.status.setVisible(True)
+    # Если база ответила положительно, то переключить на экран с работой
+    open_screen_main3()
+
+
+def open_screen_main3():
+    hide_all_screens()
+    uiM.Main_3.setVisible(True)
+    uiM.listView.setModel(QStringListModel(get_files()))
+
+
+def open_screen_main4():
+    hide_all_screens()
+    uiM.Main_4.setVisible(True)
+    uiM.btn_exit.setVisible(False)
+    t = Timer(10, open_main_screen)
+    t.start()
+    # timer_painter = QTimer()
+    # timer_painter.start(1)
+    # timer_painter.timeout.connect(open_main_screen)
+
 
 
 def stud_validation_check():
@@ -91,6 +120,8 @@ last_name_validation_check.temp_text = ""
 def open_main_screen():
     hide_all_screens()
     uiM.Main.setVisible(True)
+    uiM.btn_exit.setVisible(False)
+
 
 def hide_all_screens():
     for v in screens:
