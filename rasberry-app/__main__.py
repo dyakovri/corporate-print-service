@@ -22,9 +22,12 @@ def ui_create():
     # win = uic.loadUi("form.ui")  # расположение вашего файла .ui
     win = QtWidgets.QWidget()
     uiM.setupUi(win)
-    screens = [uiM.Main, uiM.Main_2, uiM.Main_3, uiM.Main_4, uiM.Splash]
+    screens = [uiM.Main, uiM.Main_2, uiM.Main_3, uiM.Main_4, uiM.Main_5, uiM.Splash]
     uiM.btn_1.clicked.connect(open_screen_sign_in_on_stud)
     uiM.btn_2.clicked.connect(open_screen_sign_in_on_prof)
+    uiM.btn_3.clicked.connect(open_screen_file_code)
+    uiM.line_file_code.setPlaceholderText("Код файла")
+    # uiM.line_file_code.textEdited.connect(prof_validation_check) TODO валидация ввода кода
     uiM.btn_exit.clicked.connect(open_main_screen)
     uiM.btn_exit_2.clicked.connect(open_screen_splash)
     uiM.btn_back.clicked.connect(open_screen_main3)
@@ -56,6 +59,13 @@ def open_screen_sign_in_on_prof():
     uiM.line_number.textEdited.connect(prof_validation_check)
     uiM.sign_in.disconnect()
     uiM.sign_in.clicked.connect(db_check_prof)
+
+
+def open_screen_file_code():
+    hide_all_screens()
+    uiM.Main_5.setVisible(True)
+    uiM.btn_exit.setVisible(True)
+    uiM.status_2.setVisible(False)
 
 
 def open_screen_main2():
