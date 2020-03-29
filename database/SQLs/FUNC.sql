@@ -2,7 +2,7 @@
 -- Работа с пользователями
 --------------------------------------------------------
 -- Returns user id if login succeed, 
--- else rases error
+-- else returns -1
 DROP FUNCTION IF EXISTS users.login;
 CREATE OR REPLACE FUNCTION users.login(
     IN p_type_id INTEGER,
@@ -25,7 +25,7 @@ BEGIN
           AND upa.password = p_password); 
     -- 
     IF loginid IS NULL 
-    THEN RAISE EXCEPTION 'User is''t exists';
+    THEN RETURN -1;
     ELSE RETURN loginid;
     END IF;
     --
@@ -109,6 +109,34 @@ BEGIN
     RETURN res;
 END;
 $$ LANGUAGE plpgsql;
+
+
+-- Returns status_code=202 if user allowed to print and it's user_id
+-- Else returns status_code=204 if user not allowed to print and it's user_id
+-- If user does't exists, creates new, returns status_code=201 and it's user_id. 
+DROP FUNCTION IF EXISTS users.signin_routine;
+CREATE OR REPLACE FUNCTION users.signin_routine(
+    IN p_type_id INTEGER,
+    IN p_login VARCHAR(64),
+    IN p_password VARCHAR(64)
+) RETURNS TABLE(status_code INTEGER, status_message TEXT, user_id INTEGER) AS $$ 
+DECLARE
+    p_user_id INTEGER;
+BEGIN 
+    p_user_id = users.login(p_type_id, p_login, p_password);
+    IF p_user_id = -1 THEN p_user_id = users.register(p_type_id, p_login, p_password); END IF;
+        -- Пользователь существует, проверяем на возможность печати
+    IF (SELECT TRUE IN (vpa.is_proved) 
+        FROM users.v_profile_available vpa 
+        WHERE vpa.id = p_user_id)
+    THEN RETURN QUERY SELECT 202, 'Пользователь успешно вошел в систему', p_user_id;
+    ELSE 
+        IF (users.prove_auto (p_user_id))
+        THEN RETURN QUERY SELECT 202, 'Пользователь успешно вошел в систему', p_user_id;
+        ELSE RETURN QUERY SELECT 201, 'Пользователь успешно вошел в систему, но не имеет прав для печати', p_user_id;
+        END IF;
+    END IF;
+END; $$ LANGUAGE plpgsql;
 
 --------------------------------------------------------
 -- Работа с файлом
