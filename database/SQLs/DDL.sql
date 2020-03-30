@@ -243,7 +243,7 @@ CREATE TABLE logs.type(
 
 INSERT
     INTO
-    files.type(
+    logs.type(
         id,
         short_name,
         description
