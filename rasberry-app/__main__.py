@@ -1,13 +1,12 @@
 import os
-import sys
 import re
+import sys
 
-import psycopg2
 from PyPDF2 import PdfFileReader
-from PyQt5 import QtWidgets, uic
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import QFile, QIODevice, QTextStream, QStringListModel, QTimer
 from PyQt5.QtGui import QTextDocument
-from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
+from PyQt5.QtPrintSupport import QPrinter
 
 import main_form
 
@@ -200,16 +199,6 @@ def printer():
     # # dialog.addEnabledOption(QAbstractPrintDialog::PrintSelection);
     # if printDiag.exec() != QDialog.Accepted:
     #     return
-
-
-def db_test():
-    conn = psycopg2.connect(host=os.getenv("DBHOST", "localhost"), port=os.getenv("DBPORT", "5432"),
-                            dbname=os.getenv("DBNAME", "test"), user=os.getenv("DBUSER", "user"),
-                            password=os.getenv("DBPASS", "*****"))
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM information_schema.tables;")
-    print(cur.fetchall())
-
 
 if __name__ == '__main__':
     logoff_timer.setInterval(1)
