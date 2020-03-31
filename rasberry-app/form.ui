@@ -327,6 +327,13 @@
     </property>
    </widget>
   </widget>
+  <zorder>Main</zorder>
+  <zorder>Main_2</zorder>
+  <zorder>Main_3</zorder>
+  <zorder>Main_4</zorder>
+  <zorder>Main_5</zorder>
+  <zorder>btn_exit</zorder>
+  <zorder>Splash</zorder>
  </widget>
  <resources/>
  <connections/>

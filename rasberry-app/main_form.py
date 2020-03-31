@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'form.ui'
 #
-# Created by: PyQt5 UI code generator 5.13.2
+# Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -101,6 +101,13 @@ class Ui_Form(object):
         self.status_2 = QtWidgets.QLabel(self.Main_5)
         self.status_2.setGeometry(QtCore.QRect(110, 210, 251, 20))
         self.status_2.setObjectName("status_2")
+        self.Main.raise_()
+        self.Main_2.raise_()
+        self.Main_3.raise_()
+        self.Main_4.raise_()
+        self.Main_5.raise_()
+        self.btn_exit.raise_()
+        self.Splash.raise_()
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
