@@ -1,0 +1,4 @@
+psycopg2==2.8.4
+PyPDF2==1.26.0
+PyQt5==5.14.1
+PyQt5-sip==12.7.1
