@@ -140,14 +140,15 @@ def hide_all_screens():
 
 
 def get_files():
-    path = "e:/"
+    # path = "/media/pi/" # raspberry pi
+    path = "e:/"  # win testing
     out = []
     files_count = 0
     for root, dirs, files in os.walk(path, topdown=False):
         for f in files:
             files_count += 1
             if re.search(r"\.pdf$", f, re.I | re.UNICODE) is not None:
-                out.append(f)
+                out.append(os.path.join(root, f))
     out.sort()
     out.append("и других файлов: " + str(files_count))
     return out
