@@ -22,8 +22,8 @@ def ui_create():
     win = QtWidgets.QWidget()
     uiM.setupUi(win)
     screens = [uiM.Main, uiM.Main_2, uiM.Main_3, uiM.Main_4, uiM.Main_5, uiM.Splash]
-    uiM.btn_1.clicked.connect(open_screen_sign_in_on_stud)
-    uiM.btn_2.clicked.connect(open_screen_sign_in_on_prof)
+    uiM.btn_prof_login.clicked.connect(lambda: open_screen_sign_in(3))
+    uiM.btn_stud_login.clicked.connect(lambda: open_screen_sign_in(4))
     uiM.btn_3.clicked.connect(open_screen_file_code)
     uiM.line_file_code.setPlaceholderText("Код файла")
     # uiM.line_file_code.textEdited.connect(prof_validation_check) TODO валидация ввода кода
@@ -38,26 +38,20 @@ def ui_create():
     sys.exit(app.exec())
 
 
-def open_screen_sign_in_on_stud():
+def open_screen_sign_in(type_id):
     hide_all_screens()
     uiM.Main_2.setVisible(True)
-    uiM.line_number.setPlaceholderText("Номер студенческого")
     open_screen_main2()
     uiM.line_number.disconnect()
-    uiM.line_number.textEdited.connect(stud_validation_check)
     uiM.sign_in.disconnect()
-    uiM.sign_in.clicked.connect(db_check_stud)
+    uiM.sign_in.clicked.connect(lambda: db_check_login(type_id))
+    if type_id == 3:
+        uiM.line_number.setPlaceholderText("Номер профсоюзного билета")
+        uiM.line_number.textEdited.connect(prof_validation_check)
+    elif type_id == 4:
+        uiM.line_number.setPlaceholderText("Номер студенческого")
+        uiM.line_number.textEdited.connect(stud_validation_check)
 
-
-def open_screen_sign_in_on_prof():
-    hide_all_screens()
-    uiM.Main_2.setVisible(True)
-    uiM.line_number.setPlaceholderText("Номер профсоюзного билета")
-    open_screen_main2()
-    uiM.line_number.disconnect()
-    uiM.line_number.textEdited.connect(prof_validation_check)
-    uiM.sign_in.disconnect()
-    uiM.sign_in.clicked.connect(db_check_prof)
 
 
 def open_screen_file_code():
@@ -75,28 +69,11 @@ def open_screen_main2():
     uiM.btn_exit.setVisible(True)
 
 
-def db_check_stud():
-    # TODO если не найден в базе или не зарегистрирован показать сообщение
-    if False:
-        uiM.status.setText("Пользователь не зарегестрирован")
+def db_check_login(type_id):
+    if uiM.line_last_name.text() == "" or uiM.line_number.text() == "":
+        uiM.status.setText("Введи достаточно данных")
         uiM.status.setVisible(True)
         return
-    elif False:
-        uiM.status.setText("Неверный номер или фамилия")
-        uiM.status.setVisible(True)
-        return
-    # Если база ответила положительно, то переключить на экран с работой
-    open_screen_main3()
-
-
-def db_check_prof():
-    # TODO если не найден в базе или не зарегистрирован показать сообщение
-    if False:
-        uiM.status.setText("Пользователь не зарегестрирован")
-        uiM.status.setVisible(True)
-        return
-    elif False:
-        uiM.status.setText("Неверный номер или фамилия")
         uiM.status.setVisible(True)
         return
     # Если база ответила положительно, то переключить на экран с работой

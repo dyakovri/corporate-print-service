@@ -28,7 +28,7 @@
    <property name="autoFillBackground">
     <bool>true</bool>
    </property>
-   <widget class="QPushButton" name="btn_1">
+   <widget class="QPushButton" name="btn_stud_login">
     <property name="geometry">
      <rect>
       <x>60</x>
@@ -41,7 +41,7 @@
      <string>styd</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="btn_2">
+   <widget class="QPushButton" name="btn_prof_login">
     <property name="geometry">
      <rect>
       <x>190</x>
