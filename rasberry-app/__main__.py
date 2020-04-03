@@ -3,11 +3,12 @@ import re
 import sys
 
 from PyPDF2 import PdfFileReader
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import QFile, QIODevice, QTextStream, QStringListModel, QTimer
-from PyQt5.QtGui import QTextDocument
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtCore import QFile, QIODevice, QTextStream, QStringListModel, QTimer, Qt, pyqtSlot, QObject
+from PyQt5.QtGui import QTextDocument, QFocusEvent
 from PyQt5.QtPrintSupport import QPrinter
 
+import db_controller
 import main_form
 
 app = QtWidgets.QApplication([])
@@ -74,10 +75,13 @@ def db_check_login(type_id):
         uiM.status.setText("Введи достаточно данных")
         uiM.status.setVisible(True)
         return
+    out = db_controller.sign_in_routine(type_id, uiM.line_last_name.text(), uiM.line_number.text())
+    if out is None or out[0][0] == 201:
+        uiM.status.setText("Неверная пара номер фамилия или вы не являетесь подтвержденным пользователем")
         uiM.status.setVisible(True)
         return
-    # Если база ответила положительно, то переключить на экран с работой
-    open_screen_main3()
+    elif out[0][0] == 202:
+        open_screen_main3()
 
 
 def open_screen_main3():
@@ -178,8 +182,9 @@ def printer():
     # if printDiag.exec() != QDialog.Accepted:
     #     return
 
+
 if __name__ == '__main__':
     logoff_timer.setInterval(1)
     logoff_timer.timeout.connect(open_main_screen)
-    # db_test()
+    # db_controller.db_test()
     ui_create()
