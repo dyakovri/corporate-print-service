@@ -138,6 +138,67 @@ BEGIN
     END IF;
 END; $$ LANGUAGE plpgsql;
 
+
+-- Returns 200 and tradeunion number if exists
+-- Else returns 404 if user not exits or 405 if exists more than one
+DROP FUNCTION IF EXISTS users.find_tradeunion_number;
+CREATE OR REPLACE FUNCTION users.find_tradeunion_number(
+    IN p_firstname VARCHAR(64),
+    IN p_lastname VARCHAR(64),
+    IN p_birthdate DATE
+) RETURNS TABLE(status_code INTEGER, status_message TEXT, tradeunion_number VARCHAR(64)) AS $$ 
+DECLARE 
+    cnt INTEGER;
+BEGIN 
+    cnt := (SELECT COUNT(DISTINCT password) 
+        FROM users.preregistred_profile
+        WHERE   firstname=p_firstname
+            AND lastname=p_lastname
+            AND birthday=p_birthdate
+            AND type_id=3);
+    CASE cnt
+    WHEN 0 THEN RETURN QUERY (SELECT 404, 'Номер не найден', NULL::VARCHAR(64));
+    WHEN 1 THEN RETURN QUERY
+        (SELECT 200, 'Поиск завершился успешно', password 
+        FROM users.preregistred_profile
+        WHERE   firstname=p_firstname
+            AND lastname=p_lastname
+            AND birthday=p_birthdate
+            AND type_id=3);
+    ELSE RETURN QUERY SELECT (405, 'По запросу найдено более одного человека', NULL::VARCHAR(64));
+    END CASE;
+END; $$ LANGUAGE plpgsql;
+
+-- Returns 200 and student number if exists
+-- Else returns 404 if user not exits or 405 if exists more than one
+DROP FUNCTION IF EXISTS users.find_student_number;
+CREATE OR REPLACE FUNCTION users.find_student_number(
+    IN p_firstname VARCHAR(64),
+    IN p_lastname VARCHAR(64),
+    IN p_birthdate DATE
+) RETURNS TABLE(status_code INTEGER, status_message TEXT, student_number VARCHAR(64)) AS $$
+DECLARE 
+    cnt INTEGER;
+BEGIN 
+    cnt := (SELECT COUNT(DISTINCT password) 
+        FROM users.preregistred_profile
+        WHERE   firstname=p_firstname
+            AND lastname=p_lastname
+            AND birthday=p_birthdate
+            AND type_id=4);
+    CASE cnt
+    WHEN 0 THEN RETURN QUERY (SELECT 404, 'Номер не найден', NULL::VARCHAR(64));
+    WHEN 1 THEN RETURN QUERY
+        (SELECT 200, 'Поиск завершился успешно', password 
+        FROM users.preregistred_profile
+        WHERE   firstname=p_firstname
+            AND lastname=p_lastname
+            AND birthday=p_birthdate
+            AND type_id=4);
+    ELSE RETURN QUERY (SELECT 405, 'По запросу найдено более одного человека', NULL::VARCHAR(64));
+    END CASE;
+END; $$ LANGUAGE plpgsql;
+
 --------------------------------------------------------
 -- Работа с файлом
 --------------------------------------------------------

@@ -7,6 +7,7 @@ DROP SCHEMA IF EXISTS
     logs,
     automations CASCADE;
 
+CREATE SCHEMA IF NOT EXISTS laravel;
 
 --------------------------------------------------------
 -- Работа с пользователями
@@ -69,7 +70,7 @@ CREATE TABLE IF NOT EXISTS users.preregistred_profile(
     birthday DATE ,
     email VARCHAR(256) ,
     type_id INTEGER ,
-    PASSWORD VARCHAR(64) ,
+    password VARCHAR(64) ,
     created TIMESTAMP DEFAULT NOW() ,
     expires TIMESTAMP ,
     PRIMARY KEY (id, created) ,
