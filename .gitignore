@@ -1,5 +1,7 @@
 # This project test data
 database/testdata/*
+.dbeaver
+.project
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
