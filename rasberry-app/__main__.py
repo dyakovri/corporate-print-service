@@ -3,13 +3,14 @@ import re
 import sys
 
 from PyPDF2 import PdfFileReader
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtCore import QFile, QIODevice, QTextStream, QStringListModel, QTimer, Qt, pyqtSlot, QObject
-from PyQt5.QtGui import QTextDocument, QFocusEvent
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import QFile, QIODevice, QTextStream, QStringListModel, QTimer, QRegularExpression
+from PyQt5.QtGui import QTextDocument, QRegularExpressionValidator
 from PyQt5.QtPrintSupport import QPrinter
 
 import db_controller
 import main_form
+import virtual_keyboard
 
 app = QtWidgets.QApplication([])
 uiM = main_form.Ui_Form()
@@ -27,12 +28,13 @@ def ui_create():
     uiM.btn_stud_login.clicked.connect(lambda: open_screen_sign_in(4))
     uiM.btn_3.clicked.connect(open_screen_file_code)
     uiM.line_file_code.setPlaceholderText("Код файла")
-    # uiM.line_file_code.textEdited.connect(prof_validation_check) TODO валидация ввода кода
+    uiM.line_file_code.setValidator(QRegularExpressionValidator(QRegularExpression(r"^\d*$")))
     uiM.btn_exit.clicked.connect(open_main_screen)
     uiM.btn_exit_2.clicked.connect(open_screen_splash)
     uiM.btn_back.clicked.connect(open_screen_main3)
-    uiM.line_last_name.textEdited.connect(last_name_validation_check)
+    uiM.line_last_name.setValidator(QRegularExpressionValidator(QRegularExpression(r"^[А-Яа-яЁё]*$")))
     uiM.pushButton.clicked.connect(open_screen_main4)
+    virtual_keyboard.create_keyboard(uiM)
     open_main_screen()
     # ui_main_form.btn_exin.clicked.connect(exit_page)
     win.show()
@@ -48,11 +50,10 @@ def open_screen_sign_in(type_id):
     uiM.sign_in.clicked.connect(lambda: db_check_login(type_id))
     if type_id == 3:
         uiM.line_number.setPlaceholderText("Номер профсоюзного билета")
-        uiM.line_number.textEdited.connect(prof_validation_check)
+        uiM.line_number.setValidator(QRegularExpressionValidator(QRegularExpression(r"^\d{0,6}$")))
     elif type_id == 4:
         uiM.line_number.setPlaceholderText("Номер студенческого")
-        uiM.line_number.textEdited.connect(stud_validation_check)
-
+        uiM.line_number.setValidator(QRegularExpressionValidator(QRegularExpression(r"^\d*$")))
 
 
 def open_screen_file_code():
@@ -66,7 +67,6 @@ def open_screen_main2():
     uiM.line_number.setText("")
     uiM.line_last_name.setText("")
     uiM.status.setVisible(False)
-    prof_validation_check.temp_text = ""
     uiM.btn_exit.setVisible(True)
 
 
@@ -102,33 +102,6 @@ def open_screen_splash():
     hide_all_screens()
     uiM.Splash.setVisible(True)
     logoff_timer.start(4000)
-
-
-def stud_validation_check():
-    if re.match(r"^\d*$", uiM.line_number.text()) is None:
-        uiM.line_number.setText(stud_validation_check.temp_text)
-    stud_validation_check.temp_text = uiM.line_number.text()
-
-
-stud_validation_check.temp_text = ""
-
-
-def prof_validation_check():
-    if re.match(r"^\d{0,6}$", uiM.line_number.text()) is None:
-        uiM.line_number.setText(prof_validation_check.temp_text)
-    prof_validation_check.temp_text = uiM.line_number.text()
-
-
-prof_validation_check.temp_text = ""
-
-
-def last_name_validation_check():
-    if re.match(r"^[А-Яа-яЁё]*$", uiM.line_last_name.text(), re.I) is None:
-        uiM.line_last_name.setText(last_name_validation_check.temp_text)
-    last_name_validation_check.temp_text = uiM.line_last_name.text()
-
-
-last_name_validation_check.temp_text = ""
 
 
 def open_main_screen():
